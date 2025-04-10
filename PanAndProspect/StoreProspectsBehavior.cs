@@ -23,10 +23,10 @@ public class StoreProspectsBehavior(Block block) : BlockBehavior(block)
         return proPickWorkSpace;
     });
 
-    public override void OnLoaded(ICoreAPI api)
+    public override void OnLoaded(ICoreAPI coreApi)
     {
-        this.api = api;
-        if (api.Side != EnumAppSide.Server)
+        api = coreApi;
+        if (coreApi.Side != EnumAppSide.Server)
             return;
         PanAndProspectCore.Logger.Warning("Propick workspace loaded: {0}", _proPickWorkSpace == null ? "null" : _proPickWorkSpace.ToString());
     }
@@ -55,21 +55,51 @@ public class StoreProspectsBehavior(Block block) : BlockBehavior(block)
             return base.GetDrops(world, pos, byPlayer, ref dropChanceMultiplier, ref handling);
         if (world.Api is not ICoreServerAPI sapi) return base.GetDrops(world, pos, byPlayer, ref dropChanceMultiplier, ref handling);
         handling = EnumHandling.PreventSubsequent;
-        var prospects = PanAndProspectCore.GetInstance(world.Api).GetProspectsFromPos(sapi, pos);
-        if (prospects == null)
-        {
-            var proPickReading = GenProbeResults(world, pos);
-            PanAndProspectCore.Logger.Warning("Prospects: {0}", proPickReading.OreReadings.Count);
-            prospects = proPickReading.OreReadings
-                .Where(kvp => kvp.Value.PartsPerThousand > PropickReading.MentionThreshold)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.PartsPerThousand);
-        }
+        var prospects = GetProspectsFromPos(sapi, pos);
+        if (prospects != null)
+            ClearProspectsAtPos(sapi, pos);
+        else 
+            prospects = GenProspectsAtPos(world, pos);
         var treeAttributes = new TreeAttribute();
         treeAttributes.SetAttribute(Const.Attr.PanningContents, prospects.ToTreeAttribute());
         var dropStack = new ItemStack(world.BlockAccessor.GetBlock(pos)) { Attributes = treeAttributes };
         return [dropStack];
     }
+
+    public Dictionary<string, double> GenProspectsAtPos(IWorldAccessor world, BlockPos pos)
+    {
+        PanAndProspectCore.Logger.Warning("GenProspectsAtPos: {0}", pos);
+        var proPickReading = GenProbeResults(world, pos);
+        PanAndProspectCore.Logger.Warning("Probe results: {0}", proPickReading.OreReadings.Count);
+        var prospects = proPickReading.OreReadings
+            .Where(kvp => kvp.Value.PartsPerThousand > PropickReading.MentionThreshold)
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.PartsPerThousand);
+        PanAndProspectCore.Logger.Warning("Prospects: {0}", prospects.Count);
+        return prospects;
+    }
+
+    [CanBeNull]
+    public static Dictionary<string, double> GetProspectsFromPos( ICoreServerAPI sapi, BlockPos pos)
+    {
+        return PanAndProspectCore.GetInstance(sapi).GetProspectsFromPos(sapi, pos);
+    }
     
+    [CanBeNull]
+    public Dictionary<string, double> GetOrGenProspectsFromPos(ICoreServerAPI sapi, BlockPos pos)
+    {
+        PanAndProspectCore.Logger.Warning("GetOrGenProspectsFromPos: {0}", pos);
+        var prospects = PanAndProspectCore.GetInstance(sapi).GetProspectsFromPos(sapi, pos);
+        if (prospects != null) return prospects;
+        prospects = GenProspectsAtPos(sapi.World, pos);
+        PanAndProspectCore.GetInstance(sapi).AddProspectsAtPosition(sapi, pos, prospects);
+        return prospects;
+    }
+    
+    public static void ClearProspectsAtPos( ICoreServerAPI sapi, BlockPos pos)
+    {
+        PanAndProspectCore.GetInstance(sapi).ClearProspectsAtPos(sapi, pos);
+    }
+
     private PropickReading GenProbeResults(IWorldAccessor world, BlockPos pos)
     {
         var api = world.Api;

@@ -19,4 +19,9 @@ public static class ApiExtensions
     {
         api.RegisterBlockBehaviorClass($"{modId}:{typeof(T).Name}", typeof(T));
     }
+    
+    public static void RegisterBlockClass<T>(this ICoreAPI api, string modId) where T : Block
+    {
+        api.RegisterBlockClass($"{modId}:{typeof(T).Name}", typeof(T));
+    }
 }

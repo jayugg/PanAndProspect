@@ -6,6 +6,7 @@ using Vintagestory.API.Server;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.Util;
+using Vintagestory.GameContent;
 
 namespace PanAndProspect;
 
@@ -31,6 +32,7 @@ public partial class PanAndProspectCore : ModSystem
     {
         base.Start(api);
         api.RegisterBlockBehaviorClass<StoreProspectsBehavior>(ModId);
+        api.RegisterBlockClass<BlockBetterPan>(ModId);
         GlobalConstants.IgnoredStackAttributes = GlobalConstants.IgnoredStackAttributes.AddToArray(Const.Attr.PanningContents);
     }
 

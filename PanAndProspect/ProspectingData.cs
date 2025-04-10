@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using ProtoBuf;
 using Vintagestory.API.MathTools;
 
@@ -10,10 +11,11 @@ public class ProspectingData
     [ProtoMember(1)]
     private readonly Dictionary<BlockPos, Dictionary<string, double>> _data = new();
     
+    [CanBeNull]
     public Dictionary<string, double> GetProspects(BlockPos pos)
     {
         _data.TryGetValue(pos, out var prospects);
-        return prospects ?? new Dictionary<string, double>();
+        return prospects;
     }
     
     public void SetProspects(BlockPos pos, Dictionary<string, double> prospects)

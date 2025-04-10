@@ -24,11 +24,18 @@ public partial class PanAndProspectCore
         return chunk == null ? null : GetOrCreateProspectingData(chunk);
     }
     
+    [CanBeNull]
     public Dictionary<string, double> GetProspectsFromPos(ICoreServerAPI api, BlockPos pos)
     {
         var chunk = api.WorldManager.GetChunk(pos);
         var data = chunk == null ? null : GetOrCreateProspectingData(chunk, false);
         return data?.GetProspects(pos);
+    }
+    
+    public void ClearProspectsAtPos(ICoreServerAPI api, BlockPos pos)
+    {
+        var prospectingData = GetOrCreateProspectingData(api, pos);
+        prospectingData?.SetProspects(pos, null);
     }
     
     /// <summary>
