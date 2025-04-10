@@ -1,3 +1,4 @@
+using System.Linq;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Vintagestory.API.Common;
@@ -7,11 +8,11 @@ using Vintagestory.API.Util;
 
 namespace PanAndProspect;
 
-//[UsedImplicitly]
-//[HarmonyPatch(typeof(CollectibleObject))]
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
+[HarmonyPatch(typeof(CollectibleObject))]
 public static class MergeStacksPatch
 {
-    /*
+    
     [HarmonyPrefix, HarmonyPatch(nameof(CollectibleObject.TryMergeStacks))]
     public static bool TryMergeStacksPrefix(CollectibleObject __instance, ItemStackMergeOperation op)
     {
@@ -22,29 +23,23 @@ public static class MergeStacksPatch
         op.MovedQuantity = GameMath.Min(op.SinkSlot.GetRemainingSlotSpace(op.SourceSlot.Itemstack), op.MovableQuantity, op.RequestedQuantity);
         var sourceAttributes = op.SourceSlot.Itemstack.Attributes[Const.Attr.PanningContents] as TreeAttribute;
         var sinkAttributes = op.SinkSlot.Itemstack.Attributes[Const.Attr.PanningContents] as TreeAttribute;
-        if (sinkAttributes.IsZero()) sinkAttributes = new TreeAttribute(); // TODO not implemented
-        if (sourceAttributes.IsZero()) sourceAttributes = new TreeAttribute(); // TODO not implemented
-        var mergedAttributes = sourceAttributes.MergeWithPanningAttributes(sinkAttributes, op.MovedQuantity, op.SinkSlot.StackSize);
+        sinkAttributes ??= new TreeAttribute();
+        sourceAttributes ??= new TreeAttribute();
+        var mergedAttributes = sourceAttributes.MergePanningAttributes(sinkAttributes, op.MovedQuantity, op.SinkSlot.StackSize);
         ((TreeAttribute)op.SinkSlot.Itemstack.Attributes).SetAttribute(Const.Attr.PanningContents, mergedAttributes);
         return true;
     }
     
-    // TODO not implemented
-    private static bool IsZero(this TreeAttribute attributes)
-    {
-        return true;
-    }
-    
-    // TODO not implemented
-    private static TreeAttribute MergeWithPanningAttributes(this TreeAttribute source, TreeAttribute sink, int mergedQuantity, int sinkStackSize)
+    private static TreeAttribute MergePanningAttributes(this TreeAttribute source, TreeAttribute sink, int movedQuantity, int sinkStackSize)
     {
         var mergedAttributes = new TreeAttribute();
-        return source;
+        foreach (var key in source.Keys.Concat(sink.Keys))
+        {
+            var sourceValue = source.GetDouble(key, 0);
+            var sinkValue = sink.GetDouble(key, 0);
+            var mergedValue = (sourceValue * movedQuantity + sinkValue * sinkStackSize) / (movedQuantity + sinkStackSize);
+            mergedAttributes.SetDouble(key, mergedValue);
+        }
+        return mergedAttributes;
     }
-    */
-    public static bool CanContainProspectInfo(this CollectibleObject collObj)
-    {
-        return collObj is Block block && WildcardUtil.Match("@(game:)(sand|gravel).*", block.Code.ToString());
-    }
-
 }

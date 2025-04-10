@@ -15,4 +15,9 @@ public static class CollectibleExtensions
         var behavior = (T) Activator.CreateInstance(typeof(T), collectible);
         collectible.CollectibleBehaviors = collectible.CollectibleBehaviors.Append(behavior);
     }
+    
+    public static bool CanContainProspectInfo(this CollectibleObject collObj)
+    {
+        return collObj is Block block && WildcardUtil.Match("@(game:)(sand|gravel|soil).*", block.Code.ToString());
+    }
 }

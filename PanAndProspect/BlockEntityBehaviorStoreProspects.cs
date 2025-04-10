@@ -8,19 +8,23 @@ using Vintagestory.GameContent;
 namespace PanAndProspect;
 
 [UsedImplicitly]
-public class BlockEntityBehaviorStoreProspects(BlockEntity blockentity) : BlockEntityBehavior(blockentity)
+public class BlockEntityBehaviorStoreProspects(BlockEntity blockEntity) : BlockEntityBehavior(blockEntity)
 {
     public Dictionary<string, double> Prospects { get; set; } = new();
 
     public override void FromTreeAttributes(ITreeAttribute tree, IWorldAccessor worldAccessForResolve)
     {
         var prospects = tree.GetTreeAttribute(Const.Attr.PanningContents);
-        var prospectsDict = prospects.ToDictionary(
-            kvp => kvp.Key,
-            kvp => (kvp.Value as DoubleAttribute)?.value ?? 0.0
-        );
-        prospectsDict = prospectsDict.Where(kvp => kvp.Value > PropickReading.MentionThreshold) as Dictionary<string, double>;
-        Prospects = prospectsDict;
+        if (prospects is TreeAttribute treeAttribute)
+        {
+            Prospects = treeAttribute
+                .Where(kvp => kvp.Value is DoubleAttribute da && da.value > PropickReading.MentionThreshold)
+                .ToDictionary(kvp => kvp.Key, kvp => ((DoubleAttribute)kvp.Value).value);
+        }
+        else
+        {
+            Prospects = new Dictionary<string, double>();
+        }
     }
 
     public override void ToTreeAttributes(ITreeAttribute tree)
