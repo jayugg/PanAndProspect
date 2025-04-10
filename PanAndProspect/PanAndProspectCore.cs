@@ -1,20 +1,23 @@
 ﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Vintagestory.API.Server;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
+using Vintagestory.API.Util;
 
 namespace PanAndProspect;
 
 [UsedImplicitly]
-public class PanAndProspectCore : ModSystem
+public partial class PanAndProspectCore : ModSystem
 {
     public static ILogger Logger { get; private set; }
     public const string ModId = "panandprospect";
     public static ICoreAPI Api { get; private set; }
     private static Harmony HarmonyInstance { get; set; }
-
+    public static PanAndProspectCore GetInstance(ICoreAPI api) => api.ModLoader.GetModSystem<PanAndProspectCore>();
+    
     public override void StartPre(ICoreAPI api)
     {
         base.StartPre(api);
@@ -28,7 +31,6 @@ public class PanAndProspectCore : ModSystem
     {
         base.Start(api);
         api.RegisterBlockBehaviorClass<StoreProspectsBehavior>(ModId);
-        api.RegisterBlockEntityBehaviorClass<BlockEntityBehaviorStoreProspects>(ModId);
         GlobalConstants.IgnoredStackAttributes = GlobalConstants.IgnoredStackAttributes.AddToArray(Const.Attr.PanningContents);
     }
 

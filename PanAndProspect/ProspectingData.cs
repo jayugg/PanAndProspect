@@ -1,14 +1,26 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using ProtoBuf;
-using Vintagestory.API.Server;
+using Vintagestory.API.MathTools;
 
 namespace PanAndProspect;
 
 [ProtoContract]
 public class ProspectingData
 {
-    private readonly ConditionalWeakTable<IServerChunk, ProspectingData> _prospectingDataCache = new();
+    [ProtoMember(1)]
+    private readonly Dictionary<BlockPos, Dictionary<string, double>> _data = new();
     
-    [ProtoMember(1)] public Dictionary<string, float> Data = new();
+    public Dictionary<string, double> GetProspects(BlockPos pos)
+    {
+        _data.TryGetValue(pos, out var prospects);
+        return prospects ?? new Dictionary<string, double>();
+    }
+    
+    public void SetProspects(BlockPos pos, Dictionary<string, double> prospects)
+    {
+        if (prospects == null || prospects.Count == 0)
+            _data.Remove(pos);
+        else
+            _data[pos] = prospects;
+    }
 }

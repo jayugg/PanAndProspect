@@ -34,25 +34,11 @@ public class StoreProspectsBehavior(Block block) : BlockBehavior(block)
     public override bool DoPlaceBlock(IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel, ItemStack byItemStack,
         ref EnumHandling handling)
     {
-        PanAndProspectCore.Logger.Warning("StoreProspectsBehavior.DoPlaceBlock: {0}", blockSel.Position);
         world.BlockAccessor.SetBlock(block.BlockId, blockSel.Position, byItemStack);
-        var chunk = (world.Api as ICoreServerAPI)?.WorldManager.GetChunk(blockSel.Position);
-        var blockEntityGeneric = new BlockEntityGeneric
-        {
-            Pos = blockSel.Position
-        };
-        blockEntityGeneric.AddBehavior<BlockEntityBehaviorStoreProspects>();
-        if (chunk != null)
-            chunk.BlockEntities[blockSel.Position] = blockEntityGeneric;
-        blockEntityGeneric.Initialize(world.Api);
-        //if (world.BlockAccessor.GetBlockEntity(blockSel.Position) is not { } blockEntity ||
-        //    blockEntity.GetBehavior<BlockEntityBehaviorStoreProspects>() is not { } beBehavior) return true;
-        var beBehavior = blockEntityGeneric.GetBehavior<BlockEntityBehaviorStoreProspects>();
         if (byItemStack.Attributes[Const.Attr.PanningContents] is not ITreeAttribute prospects) return true;
-        var treeAttributes = new TreeAttribute();
-        treeAttributes.SetAttribute(Const.Attr.PanningContents, prospects);
-        beBehavior.FromTreeAttributes(treeAttributes, world);
-        blockEntityGeneric.MarkDirty();
+        var prospectsDict = prospects.ToDictionary(kvp => kvp.Key, kvp => ((DoubleAttribute)kvp.Value).value);
+        if (world.Api is ICoreServerAPI sapi)
+            PanAndProspectCore.GetInstance(world.Api).AddProspectsAtPosition(sapi, blockSel.Position, prospectsDict);
         handling = EnumHandling.PreventSubsequent;
         return true;
     }
@@ -67,12 +53,10 @@ public class StoreProspectsBehavior(Block block) : BlockBehavior(block)
         if (byPlayer is { WorldData.CurrentGameMode: EnumGameMode.Creative } ||
             !world.BlockAccessor.GetBlock(pos).CanContainProspectInfo())
             return base.GetDrops(world, pos, byPlayer, ref dropChanceMultiplier, ref handling);
+        if (world.Api is not ICoreServerAPI sapi) return base.GetDrops(world, pos, byPlayer, ref dropChanceMultiplier, ref handling);
         handling = EnumHandling.PreventSubsequent;
-        Dictionary<string, double> prospects;
-        if (world.BlockAccessor.GetBlockEntity(pos) is { } blockEntity
-            && blockEntity.GetBehavior<BlockEntityBehaviorStoreProspects>() is { } beBehavior)
-            prospects = beBehavior.Prospects;
-        else
+        var prospects = PanAndProspectCore.GetInstance(world.Api).GetProspectsFromPos(sapi, pos);
+        if (prospects == null)
         {
             var proPickReading = GenProbeResults(world, pos);
             PanAndProspectCore.Logger.Warning("Prospects: {0}", proPickReading.OreReadings.Count);

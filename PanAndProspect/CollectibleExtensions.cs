@@ -18,6 +18,6 @@ public static class CollectibleExtensions
     
     public static bool CanContainProspectInfo(this CollectibleObject collObj)
     {
-        return collObj is Block block && WildcardUtil.Match("@(game:)(sand|gravel|soil).*", block.Code.ToString());
+        return collObj is Block block && WildcardUtil.Match("@(sand|gravel)-.**", block.Code.ToString());
     }
 }

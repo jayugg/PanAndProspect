@@ -1,8 +1,9 @@
 namespace PanAndProspect;
 
-public class Const
+public static class Const
 {
-    public class Attr
+    public const string ModDataKey = $"{PanAndProspectCore.ModId}:panAndProspect";
+    public static class Attr
     {
         public const string PanningContents = "panningContents";
     }
