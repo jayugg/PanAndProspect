@@ -50,6 +50,13 @@ public class BlockBetterPan : BlockPan
         if (blockSel != null &&
             !byEntity.World.Claims.TryAccess(byPlayer, blockSel.Position, EnumBlockAccessFlags.BuildOrBreak))
             return;
+
+        if (byEntity.Controls.ShiftKey)
+        {
+            base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handling);
+            return;
+        }
+
         var blockMatCode = GetBlockMaterialCode(slot.Itemstack);
         if (!byEntity.FeetInLiquid && api is ICoreClientAPI capi && blockMatCode != null)
         {
@@ -74,7 +81,7 @@ public class BlockBetterPan : BlockPan
         var code = GetBlockMaterialCode(slot.Itemstack);
         if (api is ICoreServerAPI sapi && code != null)
         {
-            var prospects = StoreProspectsBehavior.GetProspectsFromPos(sapi, blockSel.Position);
+            var prospects = StoreProspectsBehavior.GetProspectsFromPos(sapi, byEntity.Pos.AsBlockPos);
             CreateDrop(byEntity, code, prospects);
         }
         RemoveMaterial(slot);
@@ -121,7 +128,7 @@ public class BlockBetterPan : BlockPan
             if (!(rnd < val) || stack == null) continue;
             stack = stack.Clone();
             if (player == null || !player.InventoryManager.TryGiveItemstack(stack, true))
-                api.World.SpawnItemEntity(stack, byEntity.ServerPos.XYZ);
+                api.World.SpawnItemEntity(stack, byEntity.Pos.XYZ);
             break;
         }
     }

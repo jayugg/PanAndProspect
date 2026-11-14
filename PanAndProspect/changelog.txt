@@ -1,2 +1,7 @@
+v1.0.1 Changelog
+- Fix for ocean update.
+- Ground storage.
+- Compats for Expanded Matter, Geology Additions, and Silly Aluminum nuggets/ores dropping from panning when prospectable.
+
 v1.0.0 Changelog
 - Initial release

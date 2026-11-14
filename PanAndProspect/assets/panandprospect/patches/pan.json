@@ -8,26 +8,29 @@
   {
     "file": "game:blocktypes/wood/pan.json",
     "op": "addEach",
-    "path": "/attributes/panningDrops/@(sand|gravel)-.*/-",
+    "path": "/attributes/panningDrops/@(sand|gravel|sandwavy)-.*/-",
     "value": [
-      { "type": "item", "code": "nugget-nativecopper", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-limonite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-quartz_nativegold", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-galena", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-cassiterite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-chromite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-ilmenite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-sphalerite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-quartz_nativesilver", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-galena_nativesilver", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-bismuthinite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-magnetite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-hematite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-malachite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-pentlandite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-uranium", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-wolframite", "chance": { "avg": 0, "var": 0 } },
-      { "type": "item", "code": "nugget-rhodochrosite", "chance": { "avg": 0, "var": 0 } }
+      { "type": "item", "code": "game:nugget-limonite", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-galena", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-chromite", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-ilmenite", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-nativesilver", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-bismuthinite", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-magnetite", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-hematite", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-malachite", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-pentlandite", "chance": { "avg": 0, "var": 0 } },
+      { "type": "item", "code": "game:nugget-wolframite", "chance": { "avg": 0, "var": 0 } },
     ]
+  },
+  {
+    "op": "addeach",
+    "path": "/attributes/panningDrops/@(sand|gravel|sandwavy)-.*/-",
+    "value": [
+	    { "type": "item", "code": "game:nugget-uranium",		"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-rhodochrosite",	"chance": { "avg": 0, "var": 0 } },
+    ],
+    "file": "game:blocktypes/wood/pan.json",
+	"dependsOn": [ { "modid": "em", "invert": true } ],
   }
 ]

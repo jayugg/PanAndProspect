@@ -1,0 +1,24 @@
+[
+  {
+    "op": "addeach",
+    "path": "/attributes/panningDrops/@(sand|gravel|sandwavy)-.*/-",
+    "value": [
+	    { "type": "item", "code": "game:nugget-azurite",		"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-cerussite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-chalcocite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-chalcopyrite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-franckeite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-freibergite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-hemimorphite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-nativeplatinum",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-pyrite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-smithsonite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-sperrylite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-teallite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-tetrahedrite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-vanadinite",	"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "game:nugget-wulfenite",	"chance": { "avg": 0, "var": 0 } },
+    ],
+    "file": "game:blocktypes/wood/pan.json",
+  }
+]

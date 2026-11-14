@@ -1,0 +1,11 @@
+[
+  {
+    "op": "addeach",
+    "path": "/attributes/panningDrops/@(sand|gravel|sandwavy)-.*/-",
+    "value": [
+	    { "type": "item", "code": "game:nugget-nativealuminum",		"chance": { "avg": 0, "var": 0 } },
+	    { "type": "item", "code": "sillyaluminum:ore-pyrolusite",		"chance": { "avg": 0, "var": 0 } },
+    ],
+    "file": "game:blocktypes/wood/pan.json",
+  }
+]
